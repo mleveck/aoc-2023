@@ -139,6 +139,7 @@ void read_file(char *fname, char *ret_txt, size_t fsize, size_t strsize) {
   if (bytes_read == -1) {
     printf("error reading file %s", fname);
     perror("Error");
+    fclose(inputf);
     exit(EXIT_FAILURE);
   }
   ret_txt[strsize - 1] = '\0';
