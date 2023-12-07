@@ -62,6 +62,7 @@ void parse_table(table *t) {
     tok = strtok(NULL, " :\n");
     r.src = strtoll(tok, NULL, 10);
     tok = strtok(NULL, " :\n");
+
     r.size = strtoll(tok, NULL, 10);
     *p = r;
     p++;
@@ -71,6 +72,26 @@ void parse_table(table *t) {
   t->len = table_len;
   if (NULL != tok) {
     tok = strtok(NULL, " :\n"); // get rid of string 'map'
+  }
+}
+
+void parse_input(char *input, seeds *seeds, table *tables) {
+  parse_seeds(input, seeds);
+  puts("seeds:");
+  for (int i = 0; i < seeds->len; i++) {
+    printf("%lld ", seeds->seed[i]);
+  }
+  printf("\n");
+
+  for (int i = 0; i < NTABLES; i++) {
+    table *t = tables + i;
+    parse_table(t);
+  }
+
+  puts("tables:");
+  for (int i = 0; i < NTABLES; i++) {
+    printf("table %d:\n", i);
+    print_table(tables[i]);
   }
 }
 
@@ -99,6 +120,24 @@ int64_t solve(const seeds seeds, const table *tables) {
   return res;
 }
 
+void read_file(char *fname, char *ret_txt, size_t fsize, size_t strsize) {
+  FILE *inputf = fopen(fname, "rb");
+  if (!inputf) {
+    printf("Couldn't open file %s\n", fname);
+    exit(EXIT_FAILURE);
+  }
+
+  int bytes_read = fread(ret_txt, 1, fsize, inputf);
+  if (bytes_read == -1) {
+    printf("error reading file %s", fname);
+    perror("Error");
+    fclose(inputf);
+    exit(EXIT_FAILURE);
+  }
+  ret_txt[strsize - 1] = '\0';
+  fclose(inputf);
+}
+
 int main(int argc, char *argv[]) {
   char *fname = "./sample.txt";
   if (argc > 1) {
@@ -110,44 +149,18 @@ int main(int argc, char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  char ftxt[input_st.st_size + 1];
+  size_t txtsize = input_st.st_size + 1;
 
-  FILE *inputf = fopen(fname, "rb");
-  if (!inputf) {
-    printf("Couldn't open file %s\n", fname);
-    exit(EXIT_FAILURE);
-  }
+  char input_txt[txtsize];
 
-  if (-1 == fread(ftxt, 1, input_st.st_size, inputf)) {
-    printf("error reading file %s", fname);
-    perror("Error");
-    exit(EXIT_FAILURE);
-  }
-  ftxt[input_st.st_size] = '\0';
-  char *fparse = ftxt;
+  read_file(fname, input_txt, input_st.st_size, txtsize);
+
   seeds seeds;
-  parse_seeds(fparse, &seeds);
-  puts("seeds:");
-  for (int i = 0; i < seeds.len; i++) {
-    printf("%lld ", seeds.seed[i]);
-  }
-  printf("\n");
-
   table tables[NTABLES];
-  for (int i = 0; i < NTABLES; i++) {
-    table *t = tables + i;
-    parse_table(t);
-  }
-
-  puts("tables:");
-  for (int i = 0; i < NTABLES; i++) {
-    printf("table %d:\n", i);
-    print_table(tables[i]);
-  }
+  parse_input(input_txt, &seeds, tables);
 
   int64_t solution = solve(seeds, tables);
   printf("solution: %lld\n", solution);
 
-  fclose(inputf);
   return EXIT_SUCCESS;
 }
