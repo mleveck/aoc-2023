@@ -24,7 +24,7 @@ for dir in cycle(instructions):
     if dir == "L":
         val = map[val][0]
     steps +=1
-    if val == 'ZZZ':
+    if val[-1] == 'Z':
         break
 
 print(steps)

@@ -110,7 +110,7 @@ void *solver(void *w) {
   for (uint64_t seed = work->start; seed < work->stop; seed++) {
     int64_t mapped_val = seed;
     for (int j = 0; j < NTABLES; j++) {
-      for (int64_t k = 0; k < work->tables[j].len; k++) {
+      for (int k = 0; k < work->tables[j].len; k++) {
         row r = work->tables[j].rows[k];
         if (mapped_val >= r.src && mapped_val < (r.src + r.size)) {
           mapped_val = (mapped_val - r.src) + r.dst;

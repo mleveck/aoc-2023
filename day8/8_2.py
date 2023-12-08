@@ -21,7 +21,7 @@ starts = tuple(k for k in keys if k[-1] == 'A')
 
 stepcounts = []
 
-for val in starts:
+for val in starts[:2]:
     steps = 0
     for dir in cycle(instructions):
         if dir == "R":
@@ -32,4 +32,5 @@ for val in starts:
         if val[-1] == 'Z':
             break
     stepcounts.append(steps)
+print(stepcounts)
 print(lcm(*stepcounts))

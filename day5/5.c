@@ -5,9 +5,9 @@
 #include <strings.h>
 #include <sys/stat.h>
 
-#define TABLE_CAP 100
+#define TABLE_CAP 96
 #define NTABLES 7
-#define MAX_SEEDS_N 100
+#define MAX_SEEDS_N 32
 
 typedef struct row {
   int64_t dst;
@@ -30,10 +30,11 @@ typedef struct seeds {
   int64_t seed[MAX_SEEDS_N];
 } seeds;
 
-void print_row(row r) { printf("%lld, %lld, %lld\n", r.dst, r.src, r.size); }
-void print_table(table t) {
-  for (int i = 0; i < t.len; i++) {
-    print_row(t.rows[i]);
+void print_row(const row* r) { printf("%lld, %lld, %lld\n", r->dst, r->src, r->size); }
+
+void print_table(const table* t) {
+  for (int i = 0; i < t->len; i++) {
+    print_row(&t->rows[i]);
   }
 }
 
@@ -91,7 +92,7 @@ void parse_input(char *input, seeds *seeds, table *tables) {
   puts("tables:");
   for (int i = 0; i < NTABLES; i++) {
     printf("table %d:\n", i);
-    print_table(tables[i]);
+    print_table(&tables[i]);
   }
 }
 
@@ -120,7 +121,8 @@ int64_t solve(const seeds seeds, const table *tables) {
   return res;
 }
 
-void read_file(char *fname, char *ret_txt, size_t fsize, size_t strsize) {
+void read_file(char *ret_txt, const char *fname, const size_t fsize,
+               const size_t strsize) {
   FILE *inputf = fopen(fname, "rb");
   if (!inputf) {
     printf("Couldn't open file %s\n", fname);
@@ -153,7 +155,7 @@ int main(int argc, char *argv[]) {
 
   char input_txt[txtsize];
 
-  read_file(fname, input_txt, input_st.st_size, txtsize);
+  read_file(input_txt, fname, input_st.st_size, txtsize);
 
   seeds seeds;
   table tables[NTABLES];
