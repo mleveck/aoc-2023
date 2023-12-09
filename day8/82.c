@@ -11,15 +11,16 @@
 #define MAX_INSTRUCTIONS 300
 #define MAPSIZE 26 * 26 * 26
 #define ZHASH 'Z' - 'A'
-#define MAX_PATHKEYS_LEN 6 // not totallly generalizable but seems like true for all inputs
+#define MAX_PATHKEYS_LEN                                                       \
+  6 // not totallly generalizable but seems like true for all inputs
 #define HASH(kstr)                                                             \
   ((kstr[0] - 'A') * 26 * 26 + (kstr[1] - 'A') * 26 + (kstr[2] - 'A'))
 
 typedef uint16_t key;
 typedef key map[2][MAPSIZE];
 
-void parse_input(char *input, uint16_t *instructions, size_t *num_instructions, key *path_keys, uint8_t* num_pks,
-                 map node_map) {
+void parse_input(char *input, uint16_t *instructions, size_t *num_instructions,
+                 key *path_keys, uint8_t *num_pks, map node_map) {
   char *inst_str = strtok(input, " =(),\n");
   int i = 0;
   uint16_t *iptr;
@@ -45,7 +46,7 @@ void parse_input(char *input, uint16_t *instructions, size_t *num_instructions, 
     printf("keyset %s %s %s\n", key_tok, ltok, rtok);
     node_map[LEFT][HASH(key_tok)] = HASH(ltok);
     node_map[RIGHT][HASH(key_tok)] = HASH(rtok);
-    if (key_tok[2] == 'A'){
+    if (key_tok[2] == 'A') {
       path_keys[npk] = HASH(key_tok);
       npk++;
     }
@@ -95,28 +96,30 @@ int main(int argc, char *argv[]) {
   uint16_t instructions[MAX_INSTRUCTIONS];
   size_t num_instructions;
   uint8_t num_pks;
-  parse_input(input_txt, instructions, &num_instructions, path_keys, &num_pks, node_map);
+  parse_input(input_txt, instructions, &num_instructions, path_keys, &num_pks,
+              node_map);
   printf("npks: %d\n", num_pks);
   uint64_t instr_i = 0;
   uint64_t nsteps = 0;
-  clock_t start_time = clock();
+  time_t start_time_sec = time(NULL), end_time_sec;
   while (1) {
-    if ((nsteps & (1024 * 1024 * 1024 - 1)) == 0){
-      clock_t end_time = clock();
-      printf("~1billion steps taking: %lu ms\n", end_time - start_time);
-      start_time = end_time;
+    if ((nsteps & (1024 * 1024 * 1024 - 1)) == 0) {
+      end_time_sec = time(NULL);
+      printf("~1billion steps taking: %f seconds\n",
+             difftime(end_time_sec, start_time_sec));
+      start_time_sec = end_time_sec;
       printf("At step: %llu\n", nsteps);
     }
     uint16_t inst = instructions[instr_i % num_instructions];
-    for (int i=0; i < num_pks; i++){
+    for (int i = 0; i < num_pks; i++) {
       path_keys[i] = node_map[inst][path_keys[i]];
     }
     nsteps++;
     uint8_t allz = 1;
-    for (int i = 0; i < num_pks; i++){
+    for (int i = 0; i < num_pks; i++) {
       allz = (allz && (ZHASH == path_keys[i] % 26));
     }
-    if (allz){
+    if (allz) {
       break;
     }
     instr_i++;
