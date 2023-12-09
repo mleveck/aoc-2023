@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
       for (int i=0; i < num_pks; i++){
         printf("%d ", path_keys[i]);
       }
-      printf("\n");
+      printf("instruction index = %llu\n", instr_i % num_instructions);
     }
     uint16_t inst = instructions[instr_i % num_instructions];
     for (int i = 0; i < num_pks; i++) {
