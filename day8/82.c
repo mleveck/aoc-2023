@@ -109,6 +109,11 @@ int main(int argc, char *argv[]) {
              difftime(end_time_sec, start_time_sec));
       start_time_sec = end_time_sec;
       printf("At step: %llu\n", nsteps);
+      printf("pathkeys checkpoint: ");
+      for (int i=0; i < num_pks; i++){
+        printf("%d ", path_keys[i]);
+      }
+      printf("\n");
     }
     uint16_t inst = instructions[instr_i % num_instructions];
     for (int i = 0; i < num_pks; i++) {
@@ -116,7 +121,7 @@ int main(int argc, char *argv[]) {
     }
     nsteps++;
     uint8_t allz = 1;
-    for (int i = 0; i < num_pks; i++) {
+    for (int i = 0; allz && i < num_pks; i++) {
       allz = (allz && (ZHASH == path_keys[i] % 26));
     }
     if (allz) {
