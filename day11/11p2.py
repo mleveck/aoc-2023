@@ -21,7 +21,6 @@ def print_grid(grid):
 row_to_val = set()
 col_to_val = set()
 star_map = set()
-len(star_map)
 
 for ri, rv in enumerate(grid):
     for ci, cv in enumerate(rv):

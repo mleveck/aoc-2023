@@ -16,7 +16,7 @@ patterns_txt = psplitdlines(s=input)
 patterns = []
 for pattern_txt in patterns_txt:
     rows = tuple(tuple(line) for line in pattern_txt.splitlines())
-    cols = tuple(col for col in zip(*rows))
+    cols = tuple(zip(*rows))
     patterns.append(Pattern(rows, cols))
 
 
