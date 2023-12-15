@@ -8,15 +8,17 @@ else:
 
 lines = input.splitlines()
 
-codes = lines[0].split(",")
+instructions = lines[0].split(",")
 
-anss = []
-for code in codes:
-    ans = 0
-    for c in code:
-        ans += ord(c)
-        ans = ans*17
-        ans = ans % 256
-    anss.append(ans)
 
-print( sum(anss) )
+def hash(s):
+    code = 0
+    for c in s:
+        code += ord(c)
+        code = code * 17
+        code = code % 256
+    return code
+
+
+codes = [hash(inst) for inst in instructions]
+print(sum(codes))
