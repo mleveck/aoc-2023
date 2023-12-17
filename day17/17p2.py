@@ -47,7 +47,7 @@ def next_dests(current_coord, current_dir, count):
     ]
 
 
-def djikstra(starts: list[Dest]):
+def dijkstra(starts: list[Dest]):
     node_states: dict[Dest, NodeState] = defaultdict(NodeState)
     q = [(0.0, start) for start in starts]
     for start in starts:
@@ -68,7 +68,7 @@ def djikstra(starts: list[Dest]):
     return node_states
 
 
-path_map = djikstra(
+path_map = dijkstra(
     [Dest(coord=(0, 0), dir=(0, 1), count=0), Dest(coord=(0, 0), dir=(1, 0), count=0)]
 )
 

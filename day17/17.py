@@ -45,7 +45,7 @@ def next_dests(current_coord, current_dir, count):
     ]
 
 
-def djikstra(start: Dest):
+def dijkstra(start: Dest):
     node_states: dict[Dest, NodeState] = defaultdict(NodeState)
     q = [(0.0, start)]
     node_states[start] = NodeState(path_cost=0.0)
@@ -65,7 +65,7 @@ def djikstra(start: Dest):
     return node_states
 
 
-path_map = djikstra(Dest(coord=(0, 0), dir=(0, 1), count=0))
+path_map = dijkstra(Dest(coord=(0, 0), dir=(0, 1), count=0))
 min_dest = min(
     [
         (k, v)
